@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_launcher.png",
+        "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\src\\main\\res\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\icon_edittext.png",
+        "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\src\\main\\res\\mipmap-hdpi\\icon_edittext.png"
+    },
+    {
+        "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\icon_textview.png",
+        "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\src\\main\\res\\mipmap-hdpi\\icon_textview.png"
+    }
+]
