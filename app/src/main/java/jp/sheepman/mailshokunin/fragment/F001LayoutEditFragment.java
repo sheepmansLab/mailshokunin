@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 
@@ -26,7 +26,6 @@ import java.util.List;
 
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
-import jp.sheepman.common.util.DatabaseUtil;
 import jp.sheepman.mailshokunin.R;
 import jp.sheepman.mailshokunin.common.CommonConst;
 import jp.sheepman.mailshokunin.entity.LayoutDetailEntity;
@@ -35,6 +34,9 @@ import jp.sheepman.mailshokunin.model.LayoutEditBusinessLogic;
 import jp.sheepman.mailshokunin.util.ViewCreaterUtil;
 
 public class F001LayoutEditFragment extends BaseFragment {
+    int item_width = 0;
+    int item_height = 0;
+
     private AQuery aq;
     private View root;
 
@@ -51,6 +53,7 @@ public class F001LayoutEditFragment extends BaseFragment {
             root = inflater.inflate(R.layout.fragment_f001_layout_edit, container, false);
         }
         aq = new AQuery(root);
+
         aq.id(R.id.F001_ll_main).getView().setOnDragListener(dragListener);
         aq.id(R.id.F001_iv_text).getView().setOnTouchListener(touchListener);
         aq.id(R.id.F001_iv_edit).getView().setOnTouchListener(touchListener);
@@ -61,24 +64,32 @@ public class F001LayoutEditFragment extends BaseFragment {
                 save();
             }
         });
-
-        this.reload();
-
         return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        reload();
     }
 
     /**
      * 画面をリロードする
      */
     private void reload(){
+        item_width = LinearLayout.LayoutParams.MATCH_PARENT;
+        item_height = 50;
+
         LinearLayout.LayoutParams params
-                = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT
-                                                ,LinearLayout.LayoutParams.WRAP_CONTENT);
+                = new LinearLayout.LayoutParams(item_width, item_height);
         //
         Bundle bundle = getArguments();
         if(bundle != null){
             aq.id(R.id.F001_et_title).text(bundle.getString(CommonConst.BUNDLE_KEY_F001_TEMPLATE_NAME));
         }
+
+        ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).removeAllViews();
+
         //データのロード
         LayoutEditBusinessLogic logic = new LayoutEditBusinessLogic();
         List<F001LayoutForm> list = logic.selectLayoutData(getActivity(), 1);//TODO レイアウト番号固定
@@ -113,6 +124,8 @@ public class F001LayoutEditFragment extends BaseFragment {
             entityList.add(entity);
         }
         logic.saveLayout(getActivity(), entityList);
+        Toast.makeText(getActivity(),"保存しました", Toast.LENGTH_SHORT).show();
+        reload();
     }
 
     /**
@@ -122,21 +135,23 @@ public class F001LayoutEditFragment extends BaseFragment {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             View viewDrag = view;
-            int width = aq.id(R.id.F001_ll_main).getView().getWidth();
-            int height = aq.id(R.id.F001_iv_list).getView().getHeight();
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
+            item_width = aq.id(R.id.F001_ll_main).getView().getWidth();
+            item_height = aq.id(R.id.F001_iv_list).getView().getHeight();
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(item_width, item_height);
             viewDrag = ViewCreaterUtil.createViewObject(getActivity(), "android.widget.TextView");//TODO
             viewDrag.setLayoutParams(params);
             viewDrag.setBackgroundColor(Color.DKGRAY);
             F001LayoutForm form = new F001LayoutForm();
             form.setObject_type_id(1);//TODO
             form.setLayout_id(1); //TODO
-            viewDrag.setTag(form);
-
             if(viewDrag instanceof TextView){
-                ((TextView) viewDrag).setText(new Date().toString());
+                String message = new Date().toString();
+                ((TextView)viewDrag).setText(message);
+                form.setObject_value(message);
             }
+            viewDrag.setTag(form);
             view.startDrag(null, new DragShadow(view), viewDrag, 0);
             return false;
         }
