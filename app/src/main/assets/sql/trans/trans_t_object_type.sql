@@ -1,0 +1,2 @@
+INSERT INTO t_object_type (object_type_id,object_type_name,object_class) SELECT object_type_id,object_type_name,object_class FROM t_object_type_tmp
+/

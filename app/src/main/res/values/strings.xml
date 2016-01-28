@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MailShokunin</string>
+
+    <string name="F001_text_edittext_title">New Template</string>
+</resources>

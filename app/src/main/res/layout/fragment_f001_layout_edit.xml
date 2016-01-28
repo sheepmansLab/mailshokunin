@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".fragment.F001LayoutEditFragment">
+
+    <LinearLayout
+        android:id="@+id/F001_ll_menu"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center_horizontal|top"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/F001_iv_text"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:background="@mipmap/icon_textview"/>
+
+        <ImageView
+            android:id="@+id/F001_iv_edit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:background="@mipmap/icon_edittext"/>
+
+        <ImageView
+            android:id="@+id/F001_iv_list"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:background="@color/colorPrimaryDark"/>
+
+        <Button
+            android:id="@+id/F001_btn_save"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:text="保存"/>
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/F001_ll_menu"
+        android:text="@string/F001_text_edittext_title"
+        android:id="@+id/F001_et_title"/>
+
+    <LinearLayout
+        android:id="@+id/F001_ll_main"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:layout_below="@id/F001_et_title"
+        android:layout_toEndOf="@+id/F001_ll_menu">
+    </LinearLayout>
+</RelativeLayout>
