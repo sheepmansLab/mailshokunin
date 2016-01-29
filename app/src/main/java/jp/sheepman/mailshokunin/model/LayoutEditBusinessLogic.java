@@ -99,6 +99,7 @@ public class LayoutEditBusinessLogic extends BaseModel {
                     dbUtil.insert(CommonConst.TABLE_NAME_T_OBJECTS, objectsEntity);
                 } else {
                 //存在する場合Update
+                    param_u1.clear();
                     param_u1.add(String.valueOf(entity.getObject_id()));
                     dbUtil.update(CommonConst.TABLE_NAME_T_OBJECTS, WHERE_U1, objectsEntity, param_u1);
                 }
