@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="LayoutContentView">
+        <attr name="aaa" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="Themas">
+        <attr name="layout_content_view" format="reference"/>
+    </declare-styleable>
 </resources>

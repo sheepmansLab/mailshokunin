@@ -1,6 +1,7 @@
 package jp.sheepman.mailshokunin.fragment;
 
 
+import android.content.ClipData;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -32,6 +33,7 @@ import jp.sheepman.mailshokunin.entity.LayoutDetailEntity;
 import jp.sheepman.mailshokunin.form.F001LayoutForm;
 import jp.sheepman.mailshokunin.model.LayoutEditBusinessLogic;
 import jp.sheepman.mailshokunin.util.ViewCreaterUtil;
+import jp.sheepman.mailshokunin.view.LayoutContentView;
 
 public class F001LayoutEditFragment extends BaseFragment {
     int item_width = 0;
@@ -54,7 +56,8 @@ public class F001LayoutEditFragment extends BaseFragment {
         }
         aq = new AQuery(root);
 
-        aq.id(R.id.F001_ll_main).getView().setOnDragListener(dragListener);
+        //aq.id(R.id.F001_ll_main).getView().setOnDragListener(dragListener);
+        aq.id(R.id.F001_sv_main).getView().setOnDragListener(dragListener);
         aq.id(R.id.F001_iv_text).getView().setOnTouchListener(touchListener);
         aq.id(R.id.F001_iv_edit).getView().setOnTouchListener(touchListener);
         aq.id(R.id.F001_iv_list).getView().setOnTouchListener(touchListener);
@@ -78,7 +81,7 @@ public class F001LayoutEditFragment extends BaseFragment {
      */
     private void reload(){
         item_width = LinearLayout.LayoutParams.MATCH_PARENT;
-        item_height = 50;
+        item_height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         LinearLayout.LayoutParams params
                 = new LinearLayout.LayoutParams(item_width, item_height);
@@ -98,9 +101,10 @@ public class F001LayoutEditFragment extends BaseFragment {
             View v = ViewCreaterUtil.createViewObject(getActivity(), form.getObject_class());
             v.setLayoutParams(params);
             v.setTag(form);
-            if(v instanceof TextView){
-                ((TextView)v).setText(form.getObject_value());
+            if(v instanceof LayoutContentView){
+                ((LayoutContentView)v).setText(form.getObject_value());
             }
+            v.setOnLongClickListener(longClickListener);
             ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).addView(v);
         }
     }
@@ -114,10 +118,15 @@ public class F001LayoutEditFragment extends BaseFragment {
 
         LinearLayout llMain = ((LinearLayout)aq.id(R.id.F001_ll_main).getView());
         for(int i = 0; i < llMain.getChildCount(); i ++){
-            F001LayoutForm form = (F001LayoutForm)llMain.getChildAt(i).getTag();
+            View v = llMain.getChildAt(i);
+            F001LayoutForm form = (F001LayoutForm)v.getTag();
             LayoutDetailEntity entity = new LayoutDetailEntity();
-            //entity.setObject_type_id(form.getObject_type_id());
-            entity.setObject_value(form.getObject_value());
+            entity.setObject_type_id(form.getObject_type_id());
+            if(v instanceof LayoutContentView){
+                entity.setObject_value(((LayoutContentView)v).getText());
+            } else {
+                entity.setObject_value(form.getObject_value());
+            }
             entity.setObject_id(form.getObject_id());
             entity.setLayout_id(form.getLayout_id());
             entity.setLayout_seq(i);
@@ -136,23 +145,27 @@ public class F001LayoutEditFragment extends BaseFragment {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             View viewDrag = view;
 
-            item_width = aq.id(R.id.F001_ll_main).getView().getWidth();
-            item_height = aq.id(R.id.F001_iv_list).getView().getHeight();
+            item_width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            item_height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(item_width, item_height);
-            viewDrag = ViewCreaterUtil.createViewObject(getActivity(), "android.widget.TextView");//TODO
+            viewDrag = ViewCreaterUtil.createViewObject(getActivity(), "jp.sheepman.mailshokunin.view.LayoutContentView");
             viewDrag.setLayoutParams(params);
-            viewDrag.setBackgroundColor(Color.DKGRAY);
             F001LayoutForm form = new F001LayoutForm();
             form.setObject_type_id(1);//TODO
             form.setLayout_id(1); //TODO
-            if(viewDrag instanceof TextView){
+            if(viewDrag instanceof LayoutContentView){
                 String message = new Date().toString();
-                ((TextView)viewDrag).setText(message);
+                ((LayoutContentView)viewDrag)
+                        .setTitle("TEST")
+                        .setText(message)
+                        .setDeleteButtonOnClickListener(null)
+                        .setDeleteButtonOnClickListener(null);
                 form.setObject_value(message);
             }
             viewDrag.setTag(form);
-            view.startDrag(null, new DragShadow(view), viewDrag, 0);
+            ClipData clipData = ClipData.newPlainText("dummy","");
+            view.startDrag(clipData, new DragShadow(view), viewDrag, 0);
             return false;
         }
     };
@@ -163,7 +176,8 @@ public class F001LayoutEditFragment extends BaseFragment {
     private View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View view) {
-            view.startDrag(null, new DragShadow(view), view, 0);
+            ClipData clipData = ClipData.newPlainText("dummy","");
+            view.startDrag(clipData, new DragShadow(view), view, 0);
             return false;
         }
     };

@@ -28,12 +28,12 @@
         "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_dialog_title_material.xml"
     },
     {
-        "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
-        "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_screen_simple.xml"
-    },
-    {
         "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_select_dialog_material.xml",
         "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_select_dialog_material.xml"
+    },
+    {
+        "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
+        "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_screen_simple.xml"
     },
     {
         "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_singlechoice_material.xml",
@@ -86,6 +86,10 @@
     {
         "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",
         "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.1\\res\\layout\\abc_search_view.xml"
+    },
+    {
+        "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\layout\\layout_v001_layout_content.xml",
+        "source": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\src\\main\\res\\layout\\layout_v001_layout_content.xml"
     },
     {
         "merged": "C:\\Develop\\workspace\\git\\mailshokunin\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_item_layout.xml",

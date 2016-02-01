@@ -27,7 +27,7 @@ public class LayoutEditBusinessLogic extends BaseModel {
                             "FROM t_layout tl " +
                             "LEFT OUTER JOIN t_objects toj " +
                             "ON tl.object_id = toj.object_id " +
-                            "LEFT OUTER JOIN t_object_type tot " +
+                            "INNER JOIN t_object_type tot " +
                             "ON toj.object_type_id = tot.object_type_id " +
                             "WHERE tl.layout_id = ? " +
                             "ORDER BY tl.layout_seq";
