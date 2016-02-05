@@ -6,6 +6,7 @@ public class F001LayoutForm extends BaseForm{
     private int layout_id;
     private int object_id;
     private int object_type_id;
+    private String object_type_name;
     private String object_class;
     private String object_value;
 
@@ -31,6 +32,14 @@ public class F001LayoutForm extends BaseForm{
 
     public void setObject_type_id(int object_type_id) {
         this.object_type_id = object_type_id;
+    }
+
+    public String getObject_type_name() {
+        return object_type_name;
+    }
+
+    public void setObject_type_name(String object_type_name) {
+        this.object_type_name = object_type_name;
     }
 
     public String getObject_class() {

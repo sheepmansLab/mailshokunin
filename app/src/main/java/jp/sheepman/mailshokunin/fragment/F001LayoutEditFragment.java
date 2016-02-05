@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -36,8 +35,6 @@ import jp.sheepman.mailshokunin.util.ViewCreaterUtil;
 import jp.sheepman.mailshokunin.view.LayoutContentView;
 
 public class F001LayoutEditFragment extends BaseFragment {
-    int item_width = 0;
-    int item_height = 0;
 
     private AQuery aq;
     private View root;
@@ -56,7 +53,6 @@ public class F001LayoutEditFragment extends BaseFragment {
         }
         aq = new AQuery(root);
 
-        //aq.id(R.id.F001_ll_main).getView().setOnDragListener(dragListener);
         aq.id(R.id.F001_sv_main).getView().setOnDragListener(dragListener);
         aq.id(R.id.F001_iv_text).getView().setOnTouchListener(touchListener);
         aq.id(R.id.F001_iv_edit).getView().setOnTouchListener(touchListener);
@@ -80,17 +76,10 @@ public class F001LayoutEditFragment extends BaseFragment {
      * 画面をリロードする
      */
     private void reload(){
-        item_width = LinearLayout.LayoutParams.MATCH_PARENT;
-        item_height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        LinearLayout.LayoutParams params
-                = new LinearLayout.LayoutParams(item_width, item_height);
-        //
         Bundle bundle = getArguments();
         if(bundle != null){
             aq.id(R.id.F001_et_title).text(bundle.getString(CommonConst.BUNDLE_KEY_F001_TEMPLATE_NAME));
         }
-
         ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).removeAllViews();
 
         //データのロード
@@ -98,14 +87,15 @@ public class F001LayoutEditFragment extends BaseFragment {
         List<F001LayoutForm> list = logic.selectLayoutData(getActivity(), 1);//TODO レイアウト番号固定
         //Viewの配置
         for(F001LayoutForm form : list){
-            View v = ViewCreaterUtil.createViewObject(getActivity(), form.getObject_class());
-            v.setLayoutParams(params);
-            v.setTag(form);
-            if(v instanceof LayoutContentView){
-                ((LayoutContentView)v).setText(form.getObject_value());
+            View v = createNewItem(form);
+            if(v != null) {
+                if (v instanceof LayoutContentView) {
+                    ((LayoutContentView) v).setText(form.getObject_value());
+                    ((LayoutContentView) v).setTitle(form.getObject_type_name());
+                }
+                v.setOnLongClickListener(longClickListener);
+                ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).addView(v);
             }
-            v.setOnLongClickListener(longClickListener);
-            ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).addView(v);
         }
     }
 
@@ -114,7 +104,7 @@ public class F001LayoutEditFragment extends BaseFragment {
      */
     private void save(){
         LayoutEditBusinessLogic logic = new LayoutEditBusinessLogic();
-        List<LayoutDetailEntity> entityList = new ArrayList<LayoutDetailEntity>();
+        List<LayoutDetailEntity> entityList = new ArrayList<>();
 
         LinearLayout llMain = ((LinearLayout)aq.id(R.id.F001_ll_main).getView());
         for(int i = 0; i < llMain.getChildCount(); i ++){
@@ -143,29 +133,25 @@ public class F001LayoutEditFragment extends BaseFragment {
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            View viewDrag = view;
-
-            item_width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            item_height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(item_width, item_height);
-            viewDrag = ViewCreaterUtil.createViewObject(getActivity(), "jp.sheepman.mailshokunin.view.LayoutContentView");
-            viewDrag.setLayoutParams(params);
-            F001LayoutForm form = new F001LayoutForm();
-            form.setObject_type_id(1);//TODO
+            LayoutEditBusinessLogic logic = new LayoutEditBusinessLogic();
+            F001LayoutForm form = logic.selectObjectTypeById(getActivity(), 1);//TODO
             form.setLayout_id(1); //TODO
-            if(viewDrag instanceof LayoutContentView){
-                String message = new Date().toString();
-                ((LayoutContentView)viewDrag)
-                        .setTitle("TEST")
-                        .setText(message)
-                        .setDeleteButtonOnClickListener(null)
-                        .setDeleteButtonOnClickListener(null);
-                form.setObject_value(message);
+
+            View viewDrag = createNewItem(form);
+            if(viewDrag != null) {
+                if (viewDrag instanceof LayoutContentView) {
+                    String message = new Date().toString(); //TODO
+                    ((LayoutContentView) viewDrag)
+                            .setTitle(form.getObject_type_name())
+                            .setText(message)
+                            .setDeleteButtonOnClickListener(null)
+                            .setEditButtonOnClickListener(null);
+                    form.setObject_value(message);
+                }
+                viewDrag.setTag(form);
+                ClipData clipData = ClipData.newPlainText("dummy", "");
+                view.startDrag(clipData, new DragShadow(view), viewDrag, 0);
             }
-            viewDrag.setTag(form);
-            ClipData clipData = ClipData.newPlainText("dummy","");
-            view.startDrag(clipData, new DragShadow(view), viewDrag, 0);
             return false;
         }
     };
@@ -246,6 +232,27 @@ public class F001LayoutEditFragment extends BaseFragment {
             return flg;
         }
     };
+
+    /**
+     * 新規にレイアウトのアイテムを作成する
+     * @param form Form
+     * @return View
+     */
+    private View createNewItem(F001LayoutForm form){
+        View view = null;
+        final int item_width = LinearLayout.LayoutParams.MATCH_PARENT;
+        final int item_height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        LinearLayout.LayoutParams params
+                = new LinearLayout.LayoutParams(item_width, item_height);
+
+        if(form != null){
+            view = ViewCreaterUtil.createViewObject(getActivity(), form.getObject_class());
+            view.setLayoutParams(params);
+            view.setTag(form);
+        }
+
+        return view;
+    }
 
     /**
      * ドラッグ時のイメージ描画用
