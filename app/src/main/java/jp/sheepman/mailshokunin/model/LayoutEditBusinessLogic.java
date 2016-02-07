@@ -79,7 +79,7 @@ public class LayoutEditBusinessLogic extends BaseModel {
                 if(e instanceof ObjectTypeEntity){
                     form.setObject_type_id(((ObjectTypeEntity) e).getObject_type_id());
                     form.setObject_type_name(((ObjectTypeEntity) e).getObject_type_name());
-                    form.setObject_class(((ObjectTypeEntity) e).getObject_type_class());
+                    form.setObject_class(((ObjectTypeEntity) e).getObject_class());
                 }
             }
         } finally {

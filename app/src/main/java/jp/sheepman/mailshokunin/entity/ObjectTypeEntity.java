@@ -6,7 +6,7 @@ public class ObjectTypeEntity extends BaseEntity{
     @MaxIdTargetColumn
     private int object_type_id;
     private String object_type_name;
-    private String object_type_class;
+    private String object_class;
 
     public int getObject_type_id() {
         return object_type_id;
@@ -24,11 +24,11 @@ public class ObjectTypeEntity extends BaseEntity{
         this.object_type_name = object_type_name;
     }
 
-    public String getObject_type_class() {
-        return object_type_class;
+    public String getObject_class() {
+        return object_class;
     }
 
-    public void setObject_type_class(String object_type_class) {
-        this.object_type_class = object_type_class;
+    public void setObject_class(String object_class) {
+        this.object_class = object_class;
     }
 }
