@@ -2,4 +2,5 @@
     <string name="app_name">MailShokunin</string>
 
     <string name="F001_text_edittext_title">New Template</string>
+    <string name="F002_text_button_create">新規作成</string>
 </resources>

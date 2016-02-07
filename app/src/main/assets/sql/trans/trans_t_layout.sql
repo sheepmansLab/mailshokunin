@@ -1,2 +1,2 @@
-INSERT INTO t_layout (layout_id,layout_seq,object_id) SELECT layout_id,layout_seq,object_id FROM t_layout_tmp
+INSERT INTO t_layout (layout_id,layout_name,to_list_id,cc_list_id,bcc_list_id) SELECT layout_id,layout_name,to_list_id,cc_list_id,bcc_list_id FROM t_layout_tmp
 /

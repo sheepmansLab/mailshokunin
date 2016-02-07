@@ -1,2 +1,2 @@
-DROP TABLE t_layout_tmp
+DROP TABLE t_layout
 /

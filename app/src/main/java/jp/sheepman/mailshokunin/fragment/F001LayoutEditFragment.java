@@ -28,8 +28,10 @@ import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
 import jp.sheepman.mailshokunin.R;
 import jp.sheepman.mailshokunin.common.CommonConst;
-import jp.sheepman.mailshokunin.entity.LayoutDetailEntity;
+import jp.sheepman.mailshokunin.entity.LayoutEntity;
+import jp.sheepman.mailshokunin.entity.LayoutItemEntity;
 import jp.sheepman.mailshokunin.form.F001LayoutForm;
+import jp.sheepman.mailshokunin.form.F001LayoutItemForm;
 import jp.sheepman.mailshokunin.model.LayoutEditBusinessLogic;
 import jp.sheepman.mailshokunin.util.ViewCreaterUtil;
 import jp.sheepman.mailshokunin.view.LayoutContentView;
@@ -38,6 +40,8 @@ public class F001LayoutEditFragment extends BaseFragment {
 
     private AQuery aq;
     private View root;
+
+    private int mLayout_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,17 +80,29 @@ public class F001LayoutEditFragment extends BaseFragment {
      * 画面をリロードする
      */
     private void reload(){
+        //BusinessLogic
+        LayoutEditBusinessLogic logic = new LayoutEditBusinessLogic();
+
         Bundle bundle = getArguments();
         if(bundle != null){
-            aq.id(R.id.F001_et_title).text(bundle.getString(CommonConst.BUNDLE_KEY_F001_TEMPLATE_NAME));
+            if(mLayout_id == 0){
+                mLayout_id = bundle.getInt(CommonConst.BUNDLE_KEY_F001_LAYOUT_ID, 0);
+            }
         }
-        ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).removeAllViews();
+        //レイアウト情報の取得
+        F001LayoutForm layoutForm = logic.selectLayout(getActivity(), mLayout_id);
+        aq.id(R.id.F001_et_title).text(layoutForm.getLayout_name());
+        //TODO 連絡先
+        //TO
+        //CC
+        //BCC
 
-        //データのロード
-        LayoutEditBusinessLogic logic = new LayoutEditBusinessLogic();
-        List<F001LayoutForm> list = logic.selectLayoutData(getActivity(), 1);//TODO レイアウト番号固定
+        //リストの初期化
+        ((LinearLayout) aq.id(R.id.F001_ll_main).getView()).removeAllViews();
+
+        List<F001LayoutItemForm> list = logic.selectLayoutItems(getActivity(), mLayout_id);
         //Viewの配置
-        for(F001LayoutForm form : list){
+        for(F001LayoutItemForm form : list){
             View v = createNewItem(form);
             if(v != null) {
                 if (v instanceof LayoutContentView) {
@@ -104,13 +120,25 @@ public class F001LayoutEditFragment extends BaseFragment {
      */
     private void save(){
         LayoutEditBusinessLogic logic = new LayoutEditBusinessLogic();
-        List<LayoutDetailEntity> entityList = new ArrayList<>();
+        LayoutEntity layoutEntity = new LayoutEntity();
+        List<LayoutItemEntity> entityList = new ArrayList<>();
+
+        layoutEntity.setLayout_id(mLayout_id);
+        layoutEntity.setLayout_name(aq.id(R.id.F001_et_title).getText().toString());
+//TODO 連絡先の保存
+//        layoutEntity.setTo_list_id();
+//        layoutEntity.setCc_list_id();
+//        layoutEntity.setBcc_list_id();
+        mLayout_id = logic.saveLayout(getActivity(), layoutEntity);
 
         LinearLayout llMain = ((LinearLayout)aq.id(R.id.F001_ll_main).getView());
         for(int i = 0; i < llMain.getChildCount(); i ++){
+            //Layout内のオブジェクトを取得
             View v = llMain.getChildAt(i);
-            F001LayoutForm form = (F001LayoutForm)v.getTag();
-            LayoutDetailEntity entity = new LayoutDetailEntity();
+            //formデータを取得
+            F001LayoutItemForm form = (F001LayoutItemForm)v.getTag();
+            //保存用のEntity
+            LayoutItemEntity entity = new LayoutItemEntity();
             entity.setObject_type_id(form.getObject_type_id());
             if(v instanceof LayoutContentView){
                 entity.setObject_value(((LayoutContentView)v).getText());
@@ -122,7 +150,7 @@ public class F001LayoutEditFragment extends BaseFragment {
             entity.setLayout_seq(i);
             entityList.add(entity);
         }
-        logic.saveLayout(getActivity(), entityList);
+        logic.saveLayoutItems(getActivity(), entityList);
         Toast.makeText(getActivity(),"保存しました", Toast.LENGTH_SHORT).show();
         reload();
     }
@@ -134,8 +162,8 @@ public class F001LayoutEditFragment extends BaseFragment {
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             LayoutEditBusinessLogic logic = new LayoutEditBusinessLogic();
-            F001LayoutForm form = logic.selectObjectTypeById(getActivity(), 1);//TODO
-            form.setLayout_id(1); //TODO
+            F001LayoutItemForm form = logic.selectObjectTypeById(getActivity(), 1);//TODO オブジェクトタイプID
+            form.setLayout_id(mLayout_id);
 
             View viewDrag = createNewItem(form);
             if(viewDrag != null) {
@@ -238,7 +266,7 @@ public class F001LayoutEditFragment extends BaseFragment {
      * @param form Form
      * @return View
      */
-    private View createNewItem(F001LayoutForm form){
+    private View createNewItem(F001LayoutItemForm form){
         View view = null;
         final int item_width = LinearLayout.LayoutParams.MATCH_PARENT;
         final int item_height = LinearLayout.LayoutParams.WRAP_CONTENT;
