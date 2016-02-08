@@ -1,6 +1,5 @@
 package jp.sheepman.mailshokunin.fragment;
 
-
 import android.content.ClipData;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,8 +32,8 @@ import jp.sheepman.mailshokunin.entity.LayoutItemEntity;
 import jp.sheepman.mailshokunin.form.F001LayoutForm;
 import jp.sheepman.mailshokunin.form.F001LayoutItemForm;
 import jp.sheepman.mailshokunin.model.LayoutEditBusinessLogic;
-import jp.sheepman.mailshokunin.util.ViewCreaterUtil;
-import jp.sheepman.mailshokunin.view.LayoutContentView;
+import jp.sheepman.mailshokunin.util.ViewCreateUtil;
+import jp.sheepman.mailshokunin.view.ILayoutContentView;
 
 public class F001LayoutEditFragment extends BaseFragment {
 
@@ -105,9 +104,9 @@ public class F001LayoutEditFragment extends BaseFragment {
         for(F001LayoutItemForm form : list){
             View v = createNewItem(form);
             if(v != null) {
-                if (v instanceof LayoutContentView) {
-                    ((LayoutContentView) v).setText(form.getObject_value());
-                    ((LayoutContentView) v).setTitle(form.getObject_type_name());
+                if (v instanceof ILayoutContentView) {
+                    ((ILayoutContentView)v).setText(form.getObject_value());
+                    ((ILayoutContentView)v).setTitle(form.getObject_type_name());
                 }
                 v.setOnLongClickListener(longClickListener);
                 ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).addView(v);
@@ -140,8 +139,8 @@ public class F001LayoutEditFragment extends BaseFragment {
             //保存用のEntity
             LayoutItemEntity entity = new LayoutItemEntity();
             entity.setObject_type_id(form.getObject_type_id());
-            if(v instanceof LayoutContentView){
-                entity.setObject_value(((LayoutContentView)v).getText());
+            if(v instanceof ILayoutContentView){
+                entity.setObject_value(((ILayoutContentView)v).getText());
             } else {
                 entity.setObject_value(form.getObject_value());
             }
@@ -167,12 +166,12 @@ public class F001LayoutEditFragment extends BaseFragment {
 
             View viewDrag = createNewItem(form);
             if(viewDrag != null) {
-                if (viewDrag instanceof LayoutContentView) {
+                if (viewDrag instanceof ILayoutContentView) {
                     String message = new Date().toString(); //TODO
-                    ((LayoutContentView) viewDrag)
+                    ((ILayoutContentView) viewDrag)
                             .setTitle(form.getObject_type_name())
                             .setText(message)
-                            .setDeleteButtonOnClickListener(null)
+                            .setDeleteButtonOnClickListener(deleteButtonListener)
                             .setEditButtonOnClickListener(null);
                     form.setObject_value(message);
                 }
@@ -193,6 +192,16 @@ public class F001LayoutEditFragment extends BaseFragment {
             ClipData clipData = ClipData.newPlainText("dummy","");
             view.startDrag(clipData, new DragShadow(view), view, 0);
             return false;
+        }
+    };
+
+    /**
+     * 削除ボタン押下時のイベント
+     */
+    private View.OnClickListener deleteButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.d("delete Button", view.getParent().getClass().toString());
         }
     };
 
@@ -274,7 +283,7 @@ public class F001LayoutEditFragment extends BaseFragment {
                 = new LinearLayout.LayoutParams(item_width, item_height);
 
         if(form != null){
-            view = ViewCreaterUtil.createViewObject(getActivity(), form.getObject_class());
+            view = ViewCreateUtil.createViewObject(getActivity(), form.getObject_class());
             view.setLayoutParams(params);
             view.setTag(form);
         }

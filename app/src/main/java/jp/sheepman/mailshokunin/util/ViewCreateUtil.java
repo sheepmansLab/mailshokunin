@@ -6,7 +6,7 @@ import android.view.View;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class ViewCreaterUtil {
+public class ViewCreateUtil {
     public static View createViewObject(Context context, String viewName){
         View v = null;
         try {
