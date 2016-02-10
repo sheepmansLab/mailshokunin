@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -66,6 +68,7 @@ public class F001LayoutEditFragment extends BaseFragment {
                 save();
             }
         });
+        aq.id(R.id.F001_spn_to).getView().setOnClickListener(spinerListener);
         return root;
     }
 
@@ -93,8 +96,14 @@ public class F001LayoutEditFragment extends BaseFragment {
         aq.id(R.id.F001_et_title).text(layoutForm.getLayout_name());
         //TODO 連絡先
         //TO
+        ArrayAdapter<String> toAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item);
+        ((Spinner)aq.id(R.id.F001_spn_to).getView()).setAdapter(toAdapter);
+        toAdapter.add("nichiten");
+        toAdapter.add("top954");
         //CC
         //BCC
+        aq.id(R.id.F001_spn_cc).visibility(View.GONE);
+        aq.id(R.id.F001_spn_bcc).visibility(View.GONE);
 
         //リストの初期化
         ((LinearLayout) aq.id(R.id.F001_ll_main).getView()).removeAllViews();
@@ -328,6 +337,14 @@ public class F001LayoutEditFragment extends BaseFragment {
             shadowTouchPoint.set(getView().getWidth() / 2, getView().getHeight() / 2);
         }
     }
+
+    private View.OnClickListener spinerListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            aq.id(R.id.F001_spn_cc).visibility(View.VISIBLE);
+            aq.id(R.id.F001_spn_bcc).visibility(View.VISIBLE);
+        }
+    };
 
     @Override
     public void callback() {

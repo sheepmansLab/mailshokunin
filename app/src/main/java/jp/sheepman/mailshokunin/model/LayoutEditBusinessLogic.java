@@ -35,6 +35,7 @@ public class LayoutEditBusinessLogic extends BaseModel {
             "tl.layout_id " +
             ",tl.layout_seq " +
             ",toj.object_id " +
+            ",toj.object_name " +
             ",toj.object_value " +
             ",tot.object_type_id " +
             ",tot.object_type_name " +
@@ -97,6 +98,7 @@ public class LayoutEditBusinessLogic extends BaseModel {
                 F001LayoutItemForm form = new F001LayoutItemForm();
                 form.setLayout_id(l.getLayout_id());
                 form.setObject_id(l.getObject_id());
+                form.setObject_name(l.getObject_name());
                 form.setObject_type_id(l.getObject_type_id());
                 form.setObject_type_name(l.getObject_type_name());
                 form.setObject_class(l.getObject_class());
@@ -190,6 +192,7 @@ public class LayoutEditBusinessLogic extends BaseModel {
 
                 ObjectsEntity objectsEntity = new ObjectsEntity();
                 objectsEntity.setObject_id(object_id);
+                objectsEntity.setObject_name(entity.getObject_name());
                 objectsEntity.setObject_value(entity.getObject_value());
                 objectsEntity.setObject_type_id(entity.getObject_type_id());
 

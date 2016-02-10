@@ -5,6 +5,7 @@ import jp.sheepman.common.entity.BaseEntity;
 public class ObjectsEntity extends BaseEntity{
     @MaxIdTargetColumn
     private int object_id;
+    private String object_name;
     private String object_value;
     private int object_type_id;
 
@@ -14,6 +15,14 @@ public class ObjectsEntity extends BaseEntity{
 
     public void setObject_id(int object_id) {
         this.object_id = object_id;
+    }
+
+    public String getObject_name() {
+        return object_name;
+    }
+
+    public void setObject_name(String object_name) {
+        this.object_name = object_name;
     }
 
     public String getObject_value() {

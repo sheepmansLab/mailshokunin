@@ -38,16 +38,16 @@ public class LayoutContentEditTextView extends RelativeLayout implements ILayout
      */
     private void init(){
         //入力欄を非活性化
-        aq.id(R.id.V001_tv_value).getView().setEnabled(false);
+        aq.id(R.id.V001_et_value).getView().setEnabled(false);
     }
 
     public LayoutContentEditTextView setTitle(String title){
-        aq.id(R.id.V001_tv_title).text(title);
+        aq.id(R.id.V001_et_title).text(title);
         return this;
     }
 
     public LayoutContentEditTextView setText(String text){
-        aq.id(R.id.V001_tv_value).text(text);
+        aq.id(R.id.V001_et_value).text(text);
         return this;
     }
 
@@ -62,7 +62,7 @@ public class LayoutContentEditTextView extends RelativeLayout implements ILayout
     }
 
     public String getText(){
-        return aq.id(R.id.V001_tv_value).getText().toString();
+        return aq.id(R.id.V001_et_value).getText().toString();
     }
 
 }
