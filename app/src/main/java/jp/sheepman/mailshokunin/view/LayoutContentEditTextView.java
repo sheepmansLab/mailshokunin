@@ -2,6 +2,7 @@ package jp.sheepman.mailshokunin.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -39,30 +40,40 @@ public class LayoutContentEditTextView extends RelativeLayout implements ILayout
     private void init(){
         //入力欄を非活性化
         aq.id(R.id.V001_et_value).getView().setEnabled(false);
+        aq.id(R.id.V001_btn_edit).getView().setOnClickListener(new View.OnClickListener() {
+            private boolean isEnable = false;
+
+            @Override
+            public void onClick(View v) {
+                Log.d("test", "test!!!!!");
+                isEnable = !isEnable;
+                changeMode(isEnable);
+            }
+        });
     }
 
+    @Override
     public LayoutContentEditTextView setTitle(String title){
         aq.id(R.id.V001_et_title).text(title);
         return this;
     }
 
+    @Override
     public LayoutContentEditTextView setText(String text){
         aq.id(R.id.V001_et_value).text(text);
         return this;
     }
 
-    public LayoutContentEditTextView setEditButtonOnClickListener(OnClickListener listener){
-        aq.id(R.id.V001_btn_edit).getView().setOnClickListener(listener);
-        return this;
-    }
-
-    public LayoutContentEditTextView setDeleteButtonOnClickListener(OnClickListener listener){
-        aq.id(R.id.V001_btn_delete).getView().setOnClickListener(listener);
-        return this;
-    }
-
+    @Override
     public String getText(){
         return aq.id(R.id.V001_et_value).getText().toString();
     }
 
+    @Override
+    public LayoutContentEditTextView changeMode(boolean isEnable) {
+        for(int i = 0; i < getChildCount(); i ++){
+            getChildAt(i).setEnabled(isEnable);
+        }
+        return this;
+    }
 }

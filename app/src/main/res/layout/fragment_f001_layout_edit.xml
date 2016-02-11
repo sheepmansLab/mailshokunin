@@ -51,26 +51,39 @@
         android:text="@string/F001_text_edittext_title"
         android:id="@+id/F001_et_title"/>
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="▼"
+        android:textSize="12sp"
+        android:id="@+id/F001_btn_open"
+        android:layout_below="@+id/F001_et_title"
+        android:layout_alignParentEnd="true" />
+
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/F001_spn_to"
         android:layout_below="@+id/F001_et_title"
-        android:layout_alignStart="@+id/F001_et_title"/>
+        android:layout_alignStart="@+id/F001_et_title"
+        android:layout_toStartOf="@+id/F001_btn_open" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/F001_spn_cc"
         android:layout_below="@+id/F001_spn_to"
-        android:layout_alignStart="@+id/F001_et_title"/>
+        android:layout_alignStart="@+id/F001_et_title"
+        android:layout_alignEnd="@+id/F001_spn_to" />
 
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/F001_spn_bcc"
         android:layout_below="@+id/F001_spn_cc"
-        android:layout_alignStart="@+id/F001_et_title"/>
+        android:layout_alignStart="@+id/F001_et_title"
+        android:layout_alignEnd="@+id/F001_spn_cc" />
 
     <ScrollView
         android:layout_width="match_parent"

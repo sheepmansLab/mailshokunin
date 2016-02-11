@@ -62,13 +62,14 @@ public class F001LayoutEditFragment extends BaseFragment {
         aq.id(R.id.F001_iv_text).getView().setOnTouchListener(touchListener);
         aq.id(R.id.F001_iv_edit).getView().setOnTouchListener(touchListener);
         aq.id(R.id.F001_iv_list).getView().setOnTouchListener(touchListener);
+        aq.id(R.id.F001_btn_open).getButton().setOnClickListener(spinnerListener);
         aq.id(R.id.F001_btn_save).getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 save();
             }
         });
-        aq.id(R.id.F001_spn_to).getView().setOnClickListener(spinerListener);
+
         return root;
     }
 
@@ -164,6 +165,20 @@ public class F001LayoutEditFragment extends BaseFragment {
     }
 
     /**
+     * 画面の編集モードを設定する
+     * @param view
+     * @param enable
+     */
+    public void changeMode(View view, boolean enable){
+        LinearLayout llMain = (LinearLayout)aq.id(R.id.F001_ll_main).getView();
+        for(int i = 0; i < llMain.getChildCount(); i ++){
+            if(llMain.getChildAt(i) != view){
+                llMain.getChildAt(i).setEnabled(enable);
+            }
+        }
+    }
+
+    /**
      * タッチイベントのリスナー
      */
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
@@ -179,9 +194,7 @@ public class F001LayoutEditFragment extends BaseFragment {
                     String message = new Date().toString(); //TODO
                     ((ILayoutContentView) viewDrag)
                             .setTitle(form.getObject_type_name())
-                            .setText(message)
-                            .setDeleteButtonOnClickListener(deleteButtonListener)
-                            .setEditButtonOnClickListener(null);
+                            .setText(message);
                     form.setObject_value(message);
                 }
                 viewDrag.setTag(form);
@@ -201,16 +214,6 @@ public class F001LayoutEditFragment extends BaseFragment {
             ClipData clipData = ClipData.newPlainText("dummy","");
             view.startDrag(clipData, new DragShadow(view), view, 0);
             return false;
-        }
-    };
-
-    /**
-     * 削除ボタン押下時のイベント
-     */
-    private View.OnClickListener deleteButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Log.d("delete Button", view.getParent().getClass().toString());
         }
     };
 
@@ -338,11 +341,22 @@ public class F001LayoutEditFragment extends BaseFragment {
         }
     }
 
-    private View.OnClickListener spinerListener = new View.OnClickListener() {
+    /**
+     * CC,BCC開閉ボタン
+     */
+    private View.OnClickListener spinnerListener = new View.OnClickListener() {
+        private boolean flgVisible = false;
         @Override
         public void onClick(View view) {
-            aq.id(R.id.F001_spn_cc).visibility(View.VISIBLE);
-            aq.id(R.id.F001_spn_bcc).visibility(View.VISIBLE);
+            if(flgVisible){
+                aq.id(R.id.F001_spn_cc).visibility(View.GONE);
+                aq.id(R.id.F001_spn_bcc).visibility(View.GONE);
+                flgVisible = false;
+            } else {
+                aq.id(R.id.F001_spn_cc).visibility(View.VISIBLE);
+                aq.id(R.id.F001_spn_bcc).visibility(View.VISIBLE);
+                flgVisible = true;
+            }
         }
     };
 

@@ -8,9 +8,7 @@ public interface ILayoutContentView {
 
     public LayoutContentEditTextView setText(String text);
 
-    public LayoutContentEditTextView setEditButtonOnClickListener(View.OnClickListener listener);
-
-    public LayoutContentEditTextView setDeleteButtonOnClickListener(View.OnClickListener listener);
+    public LayoutContentEditTextView changeMode(boolean isEnable);
 
     public String getText();
 }
