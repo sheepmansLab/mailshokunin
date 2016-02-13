@@ -9,6 +9,8 @@ public class CommonConst {
     //F001
     public static String BUNDLE_KEY_F001_LAYOUT_ID = "F001_layout_id";
     public static String BUNDLE_KEY_F001_LAYOUT_NAME = "F001_layout_name";
+    //F003
+    public static String BUNDLE_KEY_F003_LAYOUT_ID = "F003_layout_id";
 
     //TableName
     public static String TABLE_NAME_T_OBJECTS = "t_objects";
