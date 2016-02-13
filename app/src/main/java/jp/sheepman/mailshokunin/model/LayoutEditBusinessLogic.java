@@ -166,15 +166,13 @@ public class LayoutEditBusinessLogic extends BaseModel {
         return layout_id;
     }
 
-    public void saveLayoutItems(Context context, List<LayoutItemEntity> entityList){
+    public void saveLayoutItems(Context context, List<LayoutItemEntity> entityList, int layout_id){
         final String WHERE_S1 = "object_id = ? ";
         final String WHERE_U1 = "object_id = ? ";
         final String WHERE_D1 = "layout_id = ? ";
         List<String> param_s1 = new ArrayList<>();
         List<String> param_u1 = new ArrayList<>();
         List<String> param_d1 = new ArrayList<>();
-
-        int layout_id = entityList.get(0).getLayout_id();
 
         DatabaseUtil util = new DatabaseUtil(context);
         try{

@@ -4,6 +4,8 @@ import android.view.View;
 
 public interface ILayoutContentView {
 
+    public LayoutContentEditTextView setOwner(ILayoutContentOwner owner);
+
     public LayoutContentEditTextView setTitle(String title);
 
     public LayoutContentEditTextView setText(String text);

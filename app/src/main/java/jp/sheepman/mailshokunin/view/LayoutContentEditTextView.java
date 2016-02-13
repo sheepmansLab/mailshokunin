@@ -1,17 +1,24 @@
 package jp.sheepman.mailshokunin.view;
 
+import android.content.ClipData;
 import android.content.Context;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.androidquery.AQuery;
 
 import jp.sheepman.mailshokunin.R;
 
-public class LayoutContentEditTextView extends RelativeLayout implements ILayoutContentView {
+public class LayoutContentEditTextView extends RelativeLayout implements ILayoutContentView, View.OnLongClickListener {
     private AQuery aq;
+    private ILayoutContentOwner owner;
 
     public LayoutContentEditTextView(Context context) {
         this(context, null);
@@ -38,18 +45,43 @@ public class LayoutContentEditTextView extends RelativeLayout implements ILayout
      * 初期処理
      */
     private void init(){
-        //入力欄を非活性化
-        aq.id(R.id.V001_et_value).getView().setEnabled(false);
-        aq.id(R.id.V001_btn_edit).getView().setOnClickListener(new View.OnClickListener() {
+        aq.id(R.id.V001_btn_edit).getView().setOnClickListener(new OnClickListener() {
             private boolean isEnable = false;
 
             @Override
             public void onClick(View v) {
-                Log.d("test", "test!!!!!");
                 isEnable = !isEnable;
                 changeMode(isEnable);
             }
         });
+        aq.id(R.id.V001_btn_delete).getView().setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (owner != null) {
+                    owner.deleteView(LayoutContentEditTextView.this);
+                }
+            }
+        });
+
+        for(int i =0; i < getChildCount(); i ++){
+            View v = getChildAt(i);
+            if(!(v instanceof Button)){
+                v.setOnLongClickListener(this);
+                v.setOnDragListener(new OnDragListener() {
+                    @Override
+                    public boolean onDrag(View view, DragEvent dragEvent) {
+                        return true;
+                    }
+                });
+            }
+        }
+        this.setOnLongClickListener(this);
+    }
+
+    @Override
+    public LayoutContentEditTextView setOwner(ILayoutContentOwner owner) {
+        this.owner = owner;
+        return this;
     }
 
     @Override
@@ -72,8 +104,26 @@ public class LayoutContentEditTextView extends RelativeLayout implements ILayout
     @Override
     public LayoutContentEditTextView changeMode(boolean isEnable) {
         for(int i = 0; i < getChildCount(); i ++){
-            getChildAt(i).setEnabled(isEnable);
+            if(getChildAt(i) instanceof EditText){
+                getChildAt(i).setEnabled(isEnable);
+            }
         }
         return this;
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        this.startDrag(ClipData.newPlainText("dummy", ""), new DragShadowBuilder(this), this, 0);
+        return true;
+    }
+
+    @Override
+    public void setOnDragListener(OnDragListener l) {
+        for(int i = 0; i < getChildCount(); i ++){
+            View v = getChildAt(i);
+            if(!(v instanceof Button)){
+                v.setOnDragListener(l);
+            }
+        }
     }
 }

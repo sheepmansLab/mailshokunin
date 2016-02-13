@@ -10,6 +10,7 @@
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/V001_btn_edit"
         android:background="@color/colorPrimary"
+        android:singleLine="true"
         android:textSize="12sp"/>
     <EditText
         android:id="@+id/V001_et_value"
@@ -20,7 +21,8 @@
         android:layout_alignParentEnd="true"
         android:gravity="top|start"
         android:singleLine="false"
-        android:minLines="2"
+        android:minLines="1"
+        android:textSize="12sp"
         />
     <Button
         android:id="@+id/V001_btn_edit"

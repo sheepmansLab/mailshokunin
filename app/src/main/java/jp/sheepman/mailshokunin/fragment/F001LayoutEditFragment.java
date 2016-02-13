@@ -2,7 +2,6 @@ package jp.sheepman.mailshokunin.fragment;
 
 import android.content.ClipData;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -35,9 +34,10 @@ import jp.sheepman.mailshokunin.form.F001LayoutForm;
 import jp.sheepman.mailshokunin.form.F001LayoutItemForm;
 import jp.sheepman.mailshokunin.model.LayoutEditBusinessLogic;
 import jp.sheepman.mailshokunin.util.ViewCreateUtil;
+import jp.sheepman.mailshokunin.view.ILayoutContentOwner;
 import jp.sheepman.mailshokunin.view.ILayoutContentView;
 
-public class F001LayoutEditFragment extends BaseFragment {
+public class F001LayoutEditFragment extends BaseFragment implements ILayoutContentOwner {
 
     private AQuery aq;
     private View root;
@@ -117,8 +117,8 @@ public class F001LayoutEditFragment extends BaseFragment {
                 if (v instanceof ILayoutContentView) {
                     ((ILayoutContentView)v).setText(form.getObject_value());
                     ((ILayoutContentView)v).setTitle(form.getObject_type_name());
+                    ((ILayoutContentView)v).setOwner(this);
                 }
-                v.setOnLongClickListener(longClickListener);
                 ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).addView(v);
             }
         }
@@ -159,7 +159,7 @@ public class F001LayoutEditFragment extends BaseFragment {
             entity.setLayout_seq(i);
             entityList.add(entity);
         }
-        logic.saveLayoutItems(getActivity(), entityList);
+        logic.saveLayoutItems(getActivity(), entityList, mLayout_id);
         Toast.makeText(getActivity(),"保存しました", Toast.LENGTH_SHORT).show();
         reload();
     }
@@ -167,13 +167,18 @@ public class F001LayoutEditFragment extends BaseFragment {
     /**
      * 画面の編集モードを設定する
      * @param view
-     * @param enable
+     * @param isEnable
      */
-    public void changeMode(View view, boolean enable){
+    public void changeMode(View view, boolean isEnable){
         LinearLayout llMain = (LinearLayout)aq.id(R.id.F001_ll_main).getView();
         for(int i = 0; i < llMain.getChildCount(); i ++){
-            if(llMain.getChildAt(i) != view){
-                llMain.getChildAt(i).setEnabled(enable);
+            View v = llMain.getChildAt(i);
+            if(v != view){
+                if(v instanceof ILayoutContentView){
+                    ((ILayoutContentView) v).changeMode(isEnable);
+                } else {
+                    llMain.getChildAt(i).setEnabled(isEnable);
+                }
             }
         }
     }
@@ -194,25 +199,14 @@ public class F001LayoutEditFragment extends BaseFragment {
                     String message = new Date().toString(); //TODO
                     ((ILayoutContentView) viewDrag)
                             .setTitle(form.getObject_type_name())
-                            .setText(message);
+                            .setText(message)
+                            .setOwner(F001LayoutEditFragment.this);
                     form.setObject_value(message);
                 }
                 viewDrag.setTag(form);
                 ClipData clipData = ClipData.newPlainText("dummy", "");
                 view.startDrag(clipData, new DragShadow(view), viewDrag, 0);
             }
-            return false;
-        }
-    };
-
-    /**
-     * 長押しイベントリスナー
-     */
-    private View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View view) {
-            ClipData clipData = ClipData.newPlainText("dummy","");
-            view.startDrag(clipData, new DragShadow(view), view, 0);
             return false;
         }
     };
@@ -231,7 +225,7 @@ public class F001LayoutEditFragment extends BaseFragment {
 
                 switch (dragEvent.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:
-                        Log.d("onDrag", "STARTED");
+                        //Log.d("onDrag", "STARTED");
                         viewDrag.setAlpha(0.5f);
                         flg = true;
                         break;
@@ -242,19 +236,29 @@ public class F001LayoutEditFragment extends BaseFragment {
                         int x = (int) dragEvent.getX();
                         int y = (int) dragEvent.getY();
 
+                        int[] location = new int[2];
+                        view.getLocationOnScreen(location);
+                        x = x + location[0];
+                        y = y + location[1];
+
                         //対象のオブジェクトを削除
-                        llMain.removeView(viewDrag);
+                        deleteView(viewDrag);
                         //入替先のポジション
                         int pos = -1;
                         //被ったオブジェクトがあるかを判断
                         for (int i = 0; i < llMain.getChildCount(); i++) {
                             View child = llMain.getChildAt(i);
-                            Rect rect = new Rect();
-                            child.getHitRect(rect);
+                            child.getLocationOnScreen(location);
+                            int xc1 = location[0];
+                            int yc1 = location[1];
+                            int xc2 = xc1 + child.getWidth();
+                            int yc2 = yc1 + child.getHeight();
+
                             //重なっていた場合入替
-                            if (rect.contains(x, y)) {
+                            if ((x >= xc1 && x <= xc2)
+                                    && (y >= yc1 && y <= yc2)) {
                                 //半分より上だった場合
-                                if ((int) (child.getY() + (child.getHeight() / 2)) > y) {
+                                if ((int) (yc1 + (child.getHeight() / 2)) > y) {
                                     Log.d("onDrag", "UP");
                                     pos = i;
                                     //半分より下だった場合
@@ -272,9 +276,9 @@ public class F001LayoutEditFragment extends BaseFragment {
                         Log.d("onDrag", "POSITION:" + pos);
                         //オブジェクトを追加
                         llMain.addView(viewDrag, pos);
-                        viewDrag.setOnLongClickListener(longClickListener);
                         break;
                     default:
+                        viewDrag.setAlpha(1.0f);
                         break;
                 }
             }
@@ -299,8 +303,14 @@ public class F001LayoutEditFragment extends BaseFragment {
             view.setLayoutParams(params);
             view.setTag(form);
         }
+        view.setOnDragListener(dragListener);
 
         return view;
+    }
+
+    @Override
+    public void deleteView(View view) {
+        ((LinearLayout)aq.id(R.id.F001_ll_main).getView()).removeView(view);
     }
 
     /**
@@ -321,10 +331,11 @@ public class F001LayoutEditFragment extends BaseFragment {
                 Paint paint = new Paint();
                 paint.setAntiAlias(true);
                 paint.setStyle(Paint.Style.FILL);
-                paint.setColor(Color.BLUE);
+                paint.setColor(getResources().getColor(R.color.moccasin));
                 paint.setShadowLayer(10.0f, 10.0f, 10.0f, 0xff888888);
 
                 canvas.drawRect(viewRect, paint);
+                getView().draw(canvas);
             } else {
                 getView().draw(canvas);
             }
@@ -336,8 +347,6 @@ public class F001LayoutEditFragment extends BaseFragment {
             //影の分の領域を含めたサイズを設定
             shadowSize.set(aq.id(R.id.F001_ll_main).getView().getWidth() + margin
                             , getView().getHeight() + margin);
-            //viewの中央に設定
-            shadowTouchPoint.set(getView().getWidth() / 2, getView().getHeight() / 2);
         }
     }
 
