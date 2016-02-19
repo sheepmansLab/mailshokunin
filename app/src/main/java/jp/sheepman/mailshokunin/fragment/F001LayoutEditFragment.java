@@ -1,5 +1,6 @@
 package jp.sheepman.mailshokunin.fragment;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -13,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -24,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import jp.sheepman.common.activity.BaseActivity;
 import jp.sheepman.common.form.BaseForm;
 import jp.sheepman.common.fragment.BaseFragment;
+import jp.sheepman.mailshokunin.MainActivity;
 import jp.sheepman.mailshokunin.R;
 import jp.sheepman.mailshokunin.common.CommonConst;
 import jp.sheepman.mailshokunin.entity.LayoutEntity;
@@ -67,6 +71,18 @@ public class F001LayoutEditFragment extends BaseFragment implements ILayoutConte
             @Override
             public void onClick(View view) {
                 save();
+            }
+        });
+        aq.id(R.id.F001_btn_mail).getButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Activity base = getActivity();
+                if (base instanceof MainActivity) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(CommonConst.BUNDLE_KEY_F003_LAYOUT_ID, mLayout_id);
+                    F003MailEditFragment fragment = new F003MailEditFragment();
+                    ((MainActivity) base).changeFragment(bundle, fragment, CommonConst.FRAGMENT_TAG_F003);
+                }
             }
         });
 

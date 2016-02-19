@@ -5,6 +5,7 @@ public class CommonConst {
     /** F001 */
     public static String FRAGMENT_TAG_F001 = "F001";
     public static String FRAGMENT_TAG_F002 = "F002";
+    public static String FRAGMENT_TAG_F003 = "F003";
     //Bundle Key
     //F001
     public static String BUNDLE_KEY_F001_LAYOUT_ID = "F001_layout_id";

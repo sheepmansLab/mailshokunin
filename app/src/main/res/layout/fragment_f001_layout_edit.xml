@@ -37,6 +37,13 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:text="保存"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="Mail"
+            android:id="@+id/F001_btn_mail"/>
     </LinearLayout>
 
     <EditText
